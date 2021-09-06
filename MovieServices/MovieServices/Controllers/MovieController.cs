@@ -1,9 +1,8 @@
-﻿using System;
+﻿using MovieServices.Filters;
+using MovieServices.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using WebsiteAccess; //acess dll DB context
 
@@ -30,19 +29,86 @@ namespace MovieServices.Controllers
         }
 
         [Route("api/newMovie")]
-        public async Task<Movy> newMovie(Movy oMovie)
+        [ValidateModelAttribute]
+        public IHttpActionResult NewMovie([FromBody]Movie oMovie)
+        {
+            Movy newM = new Movy()
+            {
+                Name = oMovie.Name,
+                Rating = oMovie.Rating,
+                Release_Year = oMovie.Release_Year,
+                Movie_Img = oMovie.Movie_Img,
+                Description = oMovie.Description,
+                Movie_Trailer = oMovie.Movie_Trailer
+            };
+
+            using (PressWatchEntities entities = new PressWatchEntities()) //connection to the sql model thats connected to the db
+            {
+                entities.Movies.Add(newM);
+                entities.SaveChanges();
+                return Ok();
+            }
+        }
+
+        [HttpPatch]
+        [Route("api/updateMovie/{id}")]
+        [ValidateModelAttribute]
+        public IHttpActionResult UpdateMovie([FromBody] Movie oMovie, int id)
+        {//need to 
+            using (PressWatchEntities entities = new PressWatchEntities()) //connection to the sql model thats connected to the db
+            {
+                var result = entities.Movies.FirstOrDefault(e => e.id == id);
+
+                if (result == null)
+                {
+                    return StatusCode(HttpStatusCode.NotFound);
+                } else
+                {
+                    result.Name = oMovie.Name;
+                    result.Rating = oMovie.Rating;
+                    result.Release_Year = oMovie.Release_Year;
+                    result.Movie_Img = oMovie.Movie_Img;
+                    result.Description = oMovie.Description;
+                    result.Movie_Trailer = oMovie.Movie_Trailer;
+
+                    entities.SaveChanges();
+
+                    return StatusCode(HttpStatusCode.OK);
+                }
+            }
+        }
+
+        [Route("api/deleteMovie/{id}")]
+        [ValidateModelAttribute]
+        public IHttpActionResult DeleteMovie(int id)
         {
             using (PressWatchEntities entities = new PressWatchEntities()) //connection to the sql model thats connected to the db
             {
-
-                entities.Movies.Add(oMovie);
-
-                entities.SaveChanges(); //
-                return oMovie;
+                var result = entities.Movies.FirstOrDefault(e => e.id == id);
+                if (result == null)
+                {
+                    return StatusCode(HttpStatusCode.NotFound);
+                }
+                else
+                {
+                    entities.Movies.Remove(result);
+                    entities.SaveChanges();
+                    return StatusCode(HttpStatusCode.OK);
+                }
             }
-
-
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

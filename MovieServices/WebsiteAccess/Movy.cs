@@ -11,15 +11,27 @@ namespace WebsiteAccess
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Movy
     {
         public int id { get; set; }
+
+        [StringLength(50)]
         public string Name { get; set; }
+
+        [Range(0, 10)]
         public Nullable<int> Rating { get; set; }
+
+
+        [Range(1000, 3000)]
         public Nullable<int> Release_Year { get; set; }
+
         public string Movie_Img { get; set; }
+
+        [StringLength(50)]
         public string Description { get; set; }
+
         public string Movie_Trailer { get; set; }
     }
 }
