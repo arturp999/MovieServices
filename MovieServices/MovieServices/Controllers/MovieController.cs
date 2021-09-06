@@ -64,15 +64,32 @@ namespace MovieServices.Controllers
                     return StatusCode(HttpStatusCode.NotFound);
                 } else
                 {
-                    result.Name = oMovie.Name;
-                    result.Rating = oMovie.Rating;
-                    result.Release_Year = oMovie.Release_Year;
-                    result.Movie_Img = oMovie.Movie_Img;
-                    result.Description = oMovie.Description;
-                    result.Movie_Trailer = oMovie.Movie_Trailer;
+                    if (oMovie.Name != null)
+                    {
+                        result.Name = oMovie.Name;
+                    }
+                    if (oMovie.Rating != 0)
+                    {
+                        result.Rating = oMovie.Rating;
+                    }
+                    if (oMovie.Release_Year != 0)
+                    {
+                        result.Release_Year = oMovie.Release_Year;
+                    }
+                    if (oMovie.Movie_Img != null)
+                    {
+                        result.Movie_Img = oMovie.Movie_Img;
+                    }
+                    if (oMovie.Description != null)
+                    {
+                        result.Description = oMovie.Description;
+                    }
+                    if (oMovie.Movie_Trailer != null)
+                    {
+                        result.Movie_Trailer = oMovie.Movie_Trailer;
+                    }
 
                     entities.SaveChanges();
-
                     return StatusCode(HttpStatusCode.OK);
                 }
             }
